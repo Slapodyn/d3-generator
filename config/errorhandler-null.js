@@ -1,3 +1,0 @@
-errorHandler = {
-    onError: function() {}
-};

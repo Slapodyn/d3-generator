@@ -7,13 +7,17 @@
   </head>
   <body>
     <div id="chart"></div>
-    <script src="http://d3js.org/d3.v2.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
-function renderChart() {
-
-var data = d3.csv.parse(d3.select('#csv').text());
-<%= code %>
-}
+          function renderChart() {
+          var label = "<%= label %>";
+          var variable = "<%= variable %>";
+          var sorting = "<%= sorting %>";
+          "<%= sum %>";
+          var colour = "<%= colour %>";
+          var data = d3.csv.parse(d3.select('#csv').text());
+          <%= code %>
+          }
     </script>
     <script id="csv" type="text/csv"><%= csv %></script>
     <script>renderChart();</script>

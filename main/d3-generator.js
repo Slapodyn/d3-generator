@@ -103,7 +103,7 @@ function generateChartButtonClicked() {
     } else {
         doCallCodeGenerator();
     }
-}
+} 
 
 function closeHtmlExportDialog() {
     mixpanel.track("export_html_close_dialog");
@@ -136,16 +136,21 @@ function doCallCodeGenerator() {
 }
 
 function callCodeGenerator(categoryColumn, measureColumn, orderColumn, measureOperation) {
+    
+    var categoryColumn = $('#inputCategoryColumn').val();
+    var measureColumn = $('#inputMeasureColumn').val();
+    var orderColumn = $('input[name=order]:checked').val();
+    var measureOperation = $('#measureOperation').val(); 
+
+
     mixpanel.track("generate_chart", {
         'order': orderColumn,
         'measureOperation': measureOperation
     });
 
-    var url = '/generator/barchart'
-        + '?categoryColumn=' + categoryColumn
-        + '&measureColumn=' + measureColumn
-        + '&measureOperation=' + measureOperation
-        + '&orderColumn=' + orderColumn;
+    var url = location.href + '/chart.js';
+
+    
 
     var serviceCallTime = new Date().getTime();
     d3.text(url, function(generatedCode) {
@@ -261,7 +266,13 @@ function updateChartGeneratorState() {
 }
 
 function redrawChart() {
+
     var code = window.sourceEditor.getSession().getValue();
+    var label = $('#inputCategoryColumn').val();
+    var variable = $('#inputMeasureColumn').val();
+    var sorting = $('input[name=order]:checked').val();
+    var sum = $('#measureOperation').val();
+    var colour = $('#inputColour').val();
 
     // update code export
     if (canExport()) {
@@ -270,13 +281,23 @@ function redrawChart() {
 
             window.htmlCode = _.template(window.html_export_template, {
                 'code': code,
-                'csv': csv
+                'csv': csv,
+                'label': label,
+                'variable': variable,
+                'sorting': sorting,
+                'sum': sum,
+                'colour': colour
+                
             });
 
             clip.setText(window.htmlCode);
-            $('#exportHtml').text(window.htmlCode);
-        } catch (e) {
-            errorHandler.onError(e, "redrawChart() - error updating html page");
+            $('#exportHtml').text(window.htmlCode).error(function() {
+                alert( "Ooops... something isn't quite right!" )
+              });
+        } catch (error) {
+            $('#renderError').show().error(function() {
+                alert( "Handler for .error() called." )
+              });
         }
     }
 
@@ -292,9 +313,9 @@ function redrawChart() {
             eval('(function() {\n' + code + '\n}());');
         } catch (error) {
             $('#chart').hide();
-            $('#renderError').show();
-
-            errorHandler.onError(error, "redrawChart() - error drawing chart");
+            $('#renderError').show().error(function() {
+                alert( "Handler for .error() called." )
+              });
         }
     }
 }
@@ -329,7 +350,7 @@ window.onResize = function() {
     window.csvEditor.resize();
     window.sourceEditor.resize();
 };
-
+    
 d3.text('templates/html_export.template', function(template) {
     window.html_export_template = template;
     updateExportButton();
