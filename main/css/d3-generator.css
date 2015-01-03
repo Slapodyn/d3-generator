@@ -20,7 +20,6 @@ body {
 
 #csvEditor {
     position: relative;
-    width: 100%;
     height: 300px;
     border: 1px solid #E1E1E8;
 }
@@ -32,7 +31,7 @@ body {
     border: 1px solid #E1E1E8;
 }
 
-#introduction {
+div#introduction {
     padding: 15px;
     margin-bottom: 10px;
     background-color: #eeeeee;
@@ -55,3 +54,4 @@ body {
     line-height: 27px;
     color: inherit;
 }
+
