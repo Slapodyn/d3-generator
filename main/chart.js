@@ -84,8 +84,8 @@
             .attr('width', function(d) { return x(barValue(d)); })
             .attr('stroke', 'white')
             .attr('fill', barColour)
-            .on("mouseover", function(e){d3.select(this).style("stroke", "orange")})
-            .on("mouseout", function(e){d3.select(this).style("stroke", "white")})
+            .on("mouseover", function(e){d3.select(this).style("stroke", "orange").attr('width', function(d) { return x(barValue(d)/2); })})
+            .on("mouseout", function(e){d3.select(this).style("stroke", "white").attr('width', function(d) { return x(barValue(d)); })})
             .append("title").text(function (d) { return (barLabel(d)) + ", " + (barValue(d)); });
           // bar value labels
           barsContainer.selectAll("text").data(sortedData).enter().append("text")
@@ -102,4 +102,5 @@
             .attr("y1", -gridChartOffset)
             .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
             .style("stroke", "#000");
+
 
