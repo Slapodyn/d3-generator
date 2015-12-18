@@ -81,7 +81,7 @@
           barsContainer.selectAll("rect").data(sortedData).enter().append("rect")
             .attr('y', y)
             .attr('height', yScale.rangeBand())
-            .attr('width', function(d) { return x(barValue(d)); })
+            .attr('width', function(d) { return x(barValue(d)/3); })
             .attr('stroke', 'white')
             .attr('fill', barColour)
             .on("mouseover", function(e){d3.select(this).style("stroke", "orange").attr('width', function(d) { return x(barValue(d)/2); })})
@@ -103,4 +103,23 @@
             .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
             .style("stroke", "#000");
 
+          // Some Magic transition
+          barsContainer.selectAll("rect")
+            .transition()
+            .duration(1500)
+            .delay(100)
+            .attr('width', function(d) {return x(barValue(d)); });
 
+          //Line 
+          var valueline = d3.svg.line()
+            .x(function(d) { return x(barValue(d)) + 100; })
+            .y(function(d, i) { return y(d, i) + yScale.rangeBand() * 1.5 ; });
+
+          var newline = chart.append("path")
+            .attr("fill", "none")
+            .attr("stroke", "orange")
+            .attr("stroke-width", 3)
+            .attr("d", valueline(data));
+
+
+ 
