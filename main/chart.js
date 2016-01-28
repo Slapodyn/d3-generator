@@ -72,7 +72,7 @@
             .attr("dy", -15)
             .attr("text-anchor", "middle")
             .attr("font-size" , "15px")  
-            .text(barLabelseries);
+            .text(barLabelseries + " (Bars)");
 
           // vertical grid lines
           gridContainer.selectAll("line").data(x.ticks(10)).enter().append("line")
@@ -161,7 +161,7 @@
             .attr("dy", sortedData.length * barHeight + 30)
             .attr("text-anchor", "middle")
             .attr("font-size" , "15px")  
-            .text(lineLabelseries);
+            .text(lineLabelseries + " (Line)");
 
           var newline = chart.append("path")
             .attr("fill", "none")
@@ -173,6 +173,6 @@
             .append("title").text(function (d) { return lineLabelseries; }); 
 
 
-          }
+           }
 
         
