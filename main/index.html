@@ -64,9 +64,9 @@
             </div>
             <form class="form-horizontal">
                 <fieldset>
-                    <div class="control-group">
+                    <div class="control-group ">
                         <label class="control-label" for="inputCategoryColumn">Bar label/grouping</label>
-                        <div class="controls">
+                        <div class="controls ">
                             <select id="inputCategoryColumn">
                             </select>
                         </div>
@@ -82,7 +82,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group col-xs-6 col-md-4">
                         <label class="control-label">Order</label>
                         <div class="controls">
                             <label class="radio">
@@ -103,8 +103,21 @@
                             </label>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label" for="inputColour">Colour</label>
+                    <div class="control-group col-xs-6 col-md-4">
+                        <div>
+                            <label class="control-label" for="inputColour">Add chart line</label>
+                             <div class="controls">
+                                <div class="controls">
+                                  <button type="button" class="btn btn-default btn-large col-md-6" onclick="addLine()">Add line?</button>
+                                  <button type="button" class="btn btn-primary btn-large col-md-6" onclick="noLine()">No Line</button>
+                                </div>
+                             </div>
+                        </div>
+                        <div class="controls" style="display:none;" id="modality">
+                            <select class="input-medium" id="inputMeasureLine">
+                            </select>
+                        </div>
+                        <label class="control-label" for="inputColour">Bar Colour</label>
                         <div class="controls">
                             <select id="inputColour">
                                  <option value="Original">Original</option>
@@ -114,13 +127,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-actions" id="generateButtonSection">
+                </fieldset>
+                <div class="form-actions" id="generateButtonSection">
                         <a onclick="generateChartButtonClicked(); " class="btn btn-primary btn-large" id="buttonGenerateCode">
                             <i class="icon-picture icon-white"></i>
                             Generate Chart
                         </a>
                     </div>
-                </fieldset>
             </form>
             <div class="alert alert-block alert-error" style="display:none;" id="sourceCodeOverrideAlert">
                 <h4 class="alert-heading">This will override your source code edits!</h4>
@@ -157,7 +170,7 @@
     </div>
     <hr/>
     <footer id="footer">
-        <p>D3-Generator.com &copy; <a href="http://www.larsgrammel.de">Lars Grammel</a> 2012</p>
+        <p>D3-Generator.com &copy; <a href="http://www.larsgrammel.de">Lars Grammel, M.Gamrat</a> 2012 - 2015</p>
     </footer>
 </div>
 
@@ -183,7 +196,6 @@
     </div>
   </div>
 </div>
-
 <script src="js/zeroclipboard/ZeroClipboard.js"></script>
 <script src="js/underscore/underscore.js"></script>
 <script src="js/d3/d3.v3.js"></script>

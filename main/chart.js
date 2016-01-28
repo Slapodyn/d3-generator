@@ -3,7 +3,7 @@
           var barHeight = 20; // height of one bar
           var barLabelWidth = 100; // space reserved for bar labels
           var barLabelPadding = 5; // padding between bar and bar labels (left)
-          var gridLabelHeight = 18; // space reserved for gridline labels
+          var gridLabelHeight = 36; // space reserved for gridline labels
           var gridChartOffset = 3; // space between start of grid and first bar
           var maxBarWidth = 420; // width of the bar with the max value
           var sortedData;
@@ -11,6 +11,9 @@
           // accessor functions 
           var barLabel = function(d) { return d[label]; };
           var barValue = function(d) { return parseFloat(d[variable]); };
+          var barLabelseries = variable;
+          var lineLabelseries = linevariable;
+          var lineValue = function(d) { return parseFloat(d[linevariable]); };
            
           // Sort Data
           if (sorting === "ORIGINAL") {
@@ -46,10 +49,13 @@
           var y = function(d, i) { return yScale(i); };
           var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
           var x = d3.scale.linear().domain([0, d3.max(sortedData, barValue)]).range([0, maxBarWidth]);
+          var x2 = d3.scale.linear().domain([0, d3.max(sortedData, lineValue) ]).range([0, maxBarWidth]);
+          
           // svg container element
           var chart = d3.select('#chart').append("svg")
             .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
-            .attr('height', gridLabelHeight + gridChartOffset + sortedData.length * barHeight);
+            .attr('height', gridLabelHeight + gridChartOffset + sortedData.length * barHeight + 36);
+
           // grid line labels
           var gridContainer = chart.append('g')
             .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')'); 
@@ -57,7 +63,17 @@
             .attr("x", x)
             .attr("dy", -3)
             .attr("text-anchor", "middle")
+            .attr("font-size", "8px")
             .text(String);
+          
+          // first axis title
+          gridContainer.append("text")
+            .attr("x", maxBarWidth/2)
+            .attr("dy", -15)
+            .attr("text-anchor", "middle")
+            .attr("font-size" , "15px")  
+            .text(barLabelseries);
+
           // vertical grid lines
           gridContainer.selectAll("line").data(x.ticks(10)).enter().append("line")
             .attr("x1", x)
@@ -65,6 +81,15 @@
             .attr("y1", 0)
             .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
             .style("stroke", "#ccc");
+
+          // text label for the x axis 
+          gridContainer.append("text")     
+            .attr("x", -30)
+            .attr("y", -1)
+            .attr("font-weight", "bold")
+            .style("text-anchor", "middle")
+            .text(label);
+
           // bar labels
           var labelsContainer = chart.append('g')
             .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
@@ -75,6 +100,7 @@
             .attr("dy", ".35em") // vertical-align: middle
             .attr('text-anchor', 'end')
             .text(barLabel);
+          
           // bars
           var barsContainer = chart.append('g')
             .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
@@ -84,9 +110,10 @@
             .attr('width', function(d) { return x(barValue(d)/3); })
             .attr('stroke', 'white')
             .attr('fill', barColour)
-            .on("mouseover", function(e){d3.select(this).style("stroke", "orange").attr('width', function(d) { return x(barValue(d)/2); })})
-            .on("mouseout", function(e){d3.select(this).style("stroke", "white").attr('width', function(d) { return x(barValue(d)); })})
+            .on("mouseover", function(e){d3.select(this).style("fill", "grey");})
+            .on("mouseout", function(e){d3.select(this).style("fill", barColour);})
             .append("title").text(function (d) { return (barLabel(d)) + ", " + (barValue(d)); });
+          
           // bar value labels
           barsContainer.selectAll("text").data(sortedData).enter().append("text")
             .attr("x", function(d) { return x(barValue(d)); })
@@ -95,8 +122,10 @@
             .attr("dy", ".35em") // vertical-align: middle
             .attr("text-anchor", "start") // text-align: right
             .attr("fill", "black")
+            .attr("font-size", "10px")
             .attr("stroke", "none")
             .text(function(d) { return d3.round(barValue(d), 2); });
+          
           // start line
           barsContainer.append("line")
             .attr("y1", -gridChartOffset)
@@ -111,15 +140,39 @@
             .attr('width', function(d) {return x(barValue(d)); });
 
           //Line 
-          var valueline = d3.svg.line()
-            .x(function(d) { return x(barValue(d)) + 100; })
-            .y(function(d, i) { return y(d, i) + yScale.rangeBand() * 1.5 ; });
+          if (linevariable !== null) {
+            var valueline = d3.svg.line()
+            .x(function(d) { return x2(lineValue(d)) + barLabelWidth ; })
+            .y(function(d, i) { return y(d, i) + yScale.rangeBand() * 2.5 ; });
+
+          // grid line labels (for line)
+          var gridContainer = chart.append('g')
+            .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')'); 
+          gridContainer.selectAll("text").data(x2.ticks(10)).enter().append("text")
+            .attr("x", x2)
+            .attr("dy", sortedData.length * barHeight + 15) //labels for the line at the other end of the axis.
+            .attr("text-anchor", "middle")
+            .attr("font-size", "8px")
+            .text(String);
+          
+          // Second Axis Grid Label
+          gridContainer.append("text")
+            .attr("x", maxBarWidth/2)
+            .attr("dy", sortedData.length * barHeight + 30)
+            .attr("text-anchor", "middle")
+            .attr("font-size" , "15px")  
+            .text(lineLabelseries);
 
           var newline = chart.append("path")
             .attr("fill", "none")
             .attr("stroke", "orange")
             .attr("stroke-width", 3)
-            .attr("d", valueline(data));
+            .attr("d", valueline(data))            
+            .on("mouseover", function(e){d3.select(this).style("stroke", "grey");})
+            .on("mouseout", function(e){d3.select(this).style("stroke", "orange");})
+            .append("title").text(function (d) { return lineLabelseries; }); 
 
 
- 
+          }
+
+        

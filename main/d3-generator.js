@@ -1,3 +1,11 @@
+function addLine() {
+        $('#modality').show();
+};
+
+function noLine() {
+        $('#modality').hide();
+};
+
 var createErrorHandlingWrapper = function(context, delegate) {
     return function() {
         try {
@@ -131,16 +139,19 @@ function doCallCodeGenerator() {
         $('#inputCategoryColumn').val(),
         $('#inputMeasureColumn').val(),
         $('input[name=order]:checked').val(),
-        $('#measureOperation').val()
+        $('#measureOperation').val(),
+        $('#inputMeasureLine').val()   
     );
 }
 
-function callCodeGenerator(categoryColumn, measureColumn, orderColumn, measureOperation) {
+function callCodeGenerator(categoryColumn, measureColumn, orderColumn, measureOperation, measureOperationLine) {
     
     var categoryColumn = $('#inputCategoryColumn').val();
     var measureColumn = $('#inputMeasureColumn').val();
     var orderColumn = $('input[name=order]:checked').val();
-    var measureOperation = $('#measureOperation').val(); 
+    var measureOperation = $('#measureOperation').val();
+    var measureLine = $('#inputMeasureLine').val();
+    
 
 
     mixpanel.track("generate_chart", {
@@ -218,13 +229,17 @@ function updateChartGeneratorState() {
 
         $('#inputCategoryColumn').html(allColumnOptions);
         $('#inputMeasureColumn').html(numericColumnOptions);
+        $('#inputMeasureLine').html(numericColumnOptions);
         $('#orderColumn').html('<option value="">no order</option>' + numericColumnOptions);
 
         $('#inputCategoryColumn').attr('disabled', false);
 
         if (numericColumns.length > 0) {
             $('#inputMeasureColumn').attr('disabled', false);
+            $('#inputMeasureLine').attr('disabled', false);
             $('#measureOperation').attr('disabled', false);
+            $('#measureOperationLine').attr('disabled', false);
+            
 
             $('#orderOriginal').attr('disabled', false);
             $('#orderValueAscending').attr('disabled', false);
@@ -235,7 +250,10 @@ function updateChartGeneratorState() {
             $('#warning-no-numerical-columns').hide();
         } else {
             $('#inputMeasureColumn').attr('disabled', true);
+            $('#inputMeasureLine').attr('disabled', true);
             $('#measureOperation').attr('disabled', true);
+            $('#measureOperationLine').attr('disabled', true);
+            
 
             $('#orderOriginal').attr('disabled', true);
             $('#orderValueAscending').attr('disabled', true);
@@ -248,10 +266,15 @@ function updateChartGeneratorState() {
     } else {
         $('#inputCategoryColumn').html('');
         $('#inputMeasureColumn').html('');
+        $('#inputMeasureLine').html('');
+        
 
         $('#inputCategoryColumn').attr('disabled', true);
         $('#inputMeasureColumn').attr('disabled', true);
+        $('#inputMeasureLine').attr('disabled', true);
         $('#measureOperation').attr('disabled', true);
+        $('#measureOperationLine').attr('disabled', true);
+        
 
         $('#orderOriginal').attr('disabled', true);
         $('#orderValueAscending').attr('disabled', true);
@@ -273,6 +296,12 @@ function redrawChart() {
     var sorting = $('input[name=order]:checked').val();
     var sum = $('#measureOperation').val();
     var colour = $('#inputColour').val();
+    //condition if line is omitted...
+    if ($('#modality').is(':visible')) {
+    var linevariable = $('#inputMeasureLine').val();
+    }
+    else { var linevariable = null;
+    }
 
     // update code export
     if (canExport()) {
@@ -284,6 +313,7 @@ function redrawChart() {
                 'csv': csv,
                 'label': label,
                 'variable': variable,
+                'linevariable': linevariable,
                 'sorting': sorting,
                 'sum': sum,
                 'colour': colour

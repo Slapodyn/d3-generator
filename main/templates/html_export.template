@@ -13,7 +13,8 @@
           var label = "<%= label %>";
           var variable = "<%= variable %>";
           var sorting = "<%= sorting %>";
-          "<%= sum %>";
+          var sum = "<%= sum %>";
+          var linevariable = "<%= linevariable %>";
           var colour = "<%= colour %>";
           var data = d3.csv.parse(d3.select('#csv').text());
           <%= code %>
