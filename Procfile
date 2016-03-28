@@ -1,1 +1,1 @@
-web: python -m SimpleHTTPServer 8080
+web: python launch.py
