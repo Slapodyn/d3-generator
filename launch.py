@@ -1,1 +1,2 @@
-os.chdir(main)
+import os
+os.chdir('main')
