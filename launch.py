@@ -1,2 +1,2 @@
 import os
-os.chdir('/main')
+os.chdir('main')
