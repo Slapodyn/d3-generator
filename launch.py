@@ -1,1 +1,1 @@
-os.chdir(/main)
+os.chdir(main)
